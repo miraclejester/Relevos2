@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    [SerializeField] private float _damage;
     [SerializeField] private float _speed;
     [SerializeField] private float _timeToLive;
 
@@ -31,5 +32,12 @@ public class Projectile : MonoBehaviour
     private IEnumerator startTimer() {
         yield return new WaitForSeconds(_timeToLive);
         Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("Enemy") && other.TryGetComponent(out IDamageable enemy)) {
+            enemy.OnHit(_damage);
+            Destroy(gameObject);
+        }
     }
 }
