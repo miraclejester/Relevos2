@@ -3,9 +3,9 @@ using UnityEngine.Events;
 
 public class PlayerActivableObject : MonoBehaviour
 {
-    [SerializeField] private UnityEvent _onActivate;
+    [SerializeField] private UnityEvent<float> _onActivate;
 
-    public void Activate() {
-        _onActivate.Invoke();
+    public void Activate(float distanceToActivator) {
+        _onActivate?.Invoke(distanceToActivator);
     }
 }

@@ -15,14 +15,30 @@ public class Repeater : MonoBehaviour
     [SerializeField]
     private PlayerActivableObject _linkedObj;
 
+    [SerializeField]
+    private Color _activeColor = Color.blue;
+
+    [SerializeField]
+    private Color _inactiveColor = Color.gray;
+
     private bool _connected = true;
 
+    private bool _active = true;
+
+    Vector3[] _linePositions;
+
     Collider[] _colliders = new Collider[1];
+
+    private void Start()
+    {
+        _linePositions = new Vector3[2];
+    }
 
     private void Update()
     {
         CheckConnection();
         Activate();
+        UpdateConnection();
     }
 
     private void CheckConnection()
@@ -42,7 +58,35 @@ public class Repeater : MonoBehaviour
 
         if(collisions > 0)
         {
-            _linkedObj.Activate();
+            float distanceToLinked = Vector3.Distance(_linkedObj.transform.position, transform.position);
+            _linkedObj.Activate(distanceToLinked);
         }
+        _active = collisions > 0;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _range);
+    }
+
+    private void UpdateConnection()
+    {
+        var lineRenderer = GetComponent<LineRenderer>();
+
+        if (_connected && _active)
+        {
+            lineRenderer.startColor = _activeColor;
+            lineRenderer.endColor = _activeColor;
+        }
+        else
+        {
+            lineRenderer.startColor = _inactiveColor;
+            lineRenderer.endColor = _inactiveColor;
+        }
+
+        _linePositions[0] = transform.position;
+        _linePositions[1] = _linkedObj.transform.position;
+        lineRenderer.SetPositions(_linePositions);
     }
 }

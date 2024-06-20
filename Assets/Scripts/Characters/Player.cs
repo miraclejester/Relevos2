@@ -11,6 +11,7 @@ public class Player : MonoBehaviour {
     [SerializeField] private float _rangeRadius = 5f;
     [SerializeField] private Transform _referencePlaneTransform;
     [SerializeField] private float _pickedObjectYOffset = 0.8f;
+    [SerializeField] private float maxDraggableWeight = 20;
 
     private Vector3 _input;
     private float _currentSpeed;
@@ -31,7 +32,7 @@ public class Player : MonoBehaviour {
 
         if (_picked_obj) {
             if (Vector3.Distance(_picked_rb.transform.position, transform.position) <= _rangeRadius) {
-                _picked_obj.Activate();
+                _picked_obj.Activate(Vector3.Distance(_picked_rb.position, transform.position));
             }
         }
     }
@@ -55,7 +56,15 @@ public class Player : MonoBehaviour {
 
             if (virtualPlane.Raycast(ray, out float enter)) {
                 Vector3 hitPoint = ray.GetPoint(enter);
-                _picked_rb.MovePosition(hitPoint + Vector3.up * _pickedObjectYOffset);
+                Vector3 targetPosition = hitPoint + Vector3.up * _pickedObjectYOffset;
+                Vector3 toTarget = targetPosition - _picked_obj.transform.position;
+
+                var draggableComponent = _picked_obj.GetComponent<Draggable>();
+                float pickedWeight = Mathf.Min(draggableComponent.Weight, maxDraggableWeight);
+                
+                toTarget = (1 - pickedWeight/maxDraggableWeight) * toTarget;
+
+                _picked_rb.MovePosition(_picked_obj.transform.position + toTarget);
             }
         }
     }

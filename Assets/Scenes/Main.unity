@@ -666,6 +666,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MiniGun (CLICK AND DRAG ME) (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7040707399783412617, guid: f24181db687c18546beccf6b0e38c0ab, type: 3}
+      propertyPath: _onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7040707399783412617, guid: f24181db687c18546beccf6b0e38c0ab, type: 3}
+      propertyPath: _onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1430680205}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -987,6 +995,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d918c5c3908ec348974666130e6100c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1430680205 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 914067183006175334, guid: f24181db687c18546beccf6b0e38c0ab, type: 3}
+  m_PrefabInstance: {fileID: 646671446}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e7f955886f43534295a851c173a2243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1669369720
@@ -1489,6 +1508,34 @@ PrefabInstance:
     - target: {fileID: 4004687698071674076, guid: 959cbfe713c781341a7c8b53d914c0f4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033528159287829311, guid: 959cbfe713c781341a7c8b53d914c0f4, type: 3}
+      propertyPath: _onActivate.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033528159287829311, guid: 959cbfe713c781341a7c8b53d914c0f4, type: 3}
+      propertyPath: _onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033528159287829311, guid: 959cbfe713c781341a7c8b53d914c0f4, type: 3}
+      propertyPath: _onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1430680205}
+    - target: {fileID: 7033528159287829311, guid: 959cbfe713c781341a7c8b53d914c0f4, type: 3}
+      propertyPath: _onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033528159287829311, guid: 959cbfe713c781341a7c8b53d914c0f4, type: 3}
+      propertyPath: _onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: fire
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033528159287829311, guid: 959cbfe713c781341a7c8b53d914c0f4, type: 3}
+      propertyPath: _onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ProjectileSpawner, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033528159287829311, guid: 959cbfe713c781341a7c8b53d914c0f4, type: 3}
+      propertyPath: _onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8180621589196393571, guid: 959cbfe713c781341a7c8b53d914c0f4, type: 3}
       propertyPath: _linkedObj
