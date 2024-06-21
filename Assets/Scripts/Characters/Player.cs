@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.GraphicsBuffer;
 
 public class Player : MonoBehaviour {
 
@@ -12,6 +13,10 @@ public class Player : MonoBehaviour {
     [SerializeField] private Transform _referencePlaneTransform;
     [SerializeField] private float _pickedObjectYOffset = 0.8f;
     [SerializeField] private float maxDraggableWeight = 20;
+
+    [SerializeField]
+    private float _scrollSpeed = 30f;
+    private float _scrollInput;
 
     private Vector3 _input;
     private float _currentSpeed;
@@ -41,6 +46,13 @@ public class Player : MonoBehaviour {
         Vector3 movementDirection = _input.normalized;
         Vector3 newPosition = _rigidBody.position + _currentSpeed * Time.fixedDeltaTime * movementDirection;
         _rigidBody.MovePosition(newPosition);
+
+        if (_picked_rb is not null)
+        {
+            float frameRot = _scrollInput * _scrollSpeed * Time.fixedDeltaTime;
+            Vector3 axis = Mathf.Sign(_scrollInput) * Vector3.up;
+            _picked_rb.MoveRotation(Quaternion.RotateTowards(_picked_rb.rotation, _picked_rb.rotation * Quaternion.AngleAxis(frameRot, axis), frameRot));
+        }
     }
 
     public void OnMove(InputAction.CallbackContext context) {
@@ -64,6 +76,7 @@ public class Player : MonoBehaviour {
                 
                 toTarget = (1 - pickedWeight/maxDraggableWeight) * toTarget;
 
+
                 _picked_rb.MovePosition(_picked_obj.transform.position + toTarget);
             }
         }
@@ -80,12 +93,37 @@ public class Player : MonoBehaviour {
         }
     }
 
+
     public void OnObjectReleased() {
         if(_picked_rb) {
             _picked_rb.gameObject.layer = _originalPickedObjLayer;
         }
         _picked_rb = null;
         _picked_obj = null;
+        _scrollInput = 0;
     }
 
+
+    public void OnRotateRight(InputAction.CallbackContext context)
+    {
+        if (_picked_rb is null)
+            return;
+
+        if (context.started)
+            _scrollInput = context.ReadValue<float>();
+        else if (context.canceled)
+            _scrollInput = 0f;
+    }
+
+
+    public void OnRotateLeft(InputAction.CallbackContext context)
+    {
+        if (_picked_rb is null)
+            return;
+
+        if (context.started)
+            _scrollInput = -context.ReadValue<float>();
+        else if (context.canceled)
+            _scrollInput = 0f;
+    }
 }
