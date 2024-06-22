@@ -45,9 +45,9 @@ GameObject:
   - component: {fileID: 914067183006175334}
   - component: {fileID: 7040707399783412617}
   - component: {fileID: 3857548996109804595}
-  - component: {fileID: 8201962230878903951}
+  - component: {fileID: 6355121382348898449}
   m_Layer: 7
-  m_Name: MiniGun
+  m_Name: MidGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,8 +63,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 12.22, y: 0.72, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.25, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6935263792325932041}
   - {fileID: 8434607770243089658}
@@ -130,10 +130,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e7f955886f43534295a851c173a2243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectilePrefab: {fileID: 5555957787770195039, guid: 26b3e4778c4c5e94e8e6ef254862a860, type: 3}
+  _projectilePrefab: {fileID: 8488134240118585265, guid: 640f67e8013a714428664a70e3cf6193, type: 3}
   _projectileSpawnPoints:
   - {fileID: 8434607770243089658}
-  _fireRate: 0.15
+  _fireRate: 0.1
   _optimalActivationDistance: 8
   _maxActivationDistance: 30
 --- !u!114 &7040707399783412617
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weight: 0
---- !u!114 &8201962230878903951
+--- !u!114 &6355121382348898449
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -188,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e84961a238bc8e34ca038ff815ff5c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _objectData: {fileID: 11400000, guid: f9cc13058677b2f4d9313128f8b160b4, type: 2}
+  _objectData: {fileID: 11400000, guid: 17eed767ec5c5b9468e13949e42ea7c5, type: 2}
   OnMerged:
     m_PersistentCalls:
       m_Calls: []

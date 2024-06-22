@@ -31,6 +31,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5448929295985262946}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1968941084271719753
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 976640306460372735}
+  m_Layer: 7
+  m_Name: ProjectileSpawn (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &976640306460372735
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968941084271719753}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 0.29, z: 2.06}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5448929295985262946}
+  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+--- !u!1 &4517666167779017051
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1365831574897071650}
+  m_Layer: 7
+  m_Name: ProjectileSpawn (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1365831574897071650
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4517666167779017051}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 0.29, z: 2.06}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5448929295985262946}
+  m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
 --- !u!1 &7004024163120754832
 GameObject:
   m_ObjectHideFlags: 0
@@ -45,9 +107,9 @@ GameObject:
   - component: {fileID: 914067183006175334}
   - component: {fileID: 7040707399783412617}
   - component: {fileID: 3857548996109804595}
-  - component: {fileID: 8201962230878903951}
+  - component: {fileID: 6355121382348898449}
   m_Layer: 7
-  m_Name: MiniGun
+  m_Name: MidSpreadGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,11 +125,13 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 12.22, y: 0.72, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.25, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6935263792325932041}
   - {fileID: 8434607770243089658}
+  - {fileID: 976640306460372735}
+  - {fileID: 1365831574897071650}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &7292109348946413448
@@ -130,10 +194,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e7f955886f43534295a851c173a2243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectilePrefab: {fileID: 5555957787770195039, guid: 26b3e4778c4c5e94e8e6ef254862a860, type: 3}
+  _projectilePrefab: {fileID: 8488134240118585265, guid: 640f67e8013a714428664a70e3cf6193, type: 3}
   _projectileSpawnPoints:
   - {fileID: 8434607770243089658}
-  _fireRate: 0.15
+  - {fileID: 976640306460372735}
+  - {fileID: 1365831574897071650}
+  _fireRate: 0.1
   _optimalActivationDistance: 8
   _maxActivationDistance: 30
 --- !u!114 &7040707399783412617
@@ -176,7 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weight: 0
---- !u!114 &8201962230878903951
+--- !u!114 &6355121382348898449
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -188,7 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e84961a238bc8e34ca038ff815ff5c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _objectData: {fileID: 11400000, guid: f9cc13058677b2f4d9313128f8b160b4, type: 2}
+  _objectData: {fileID: 11400000, guid: 2c1d9b3ba771b9946a3d135e6510e2b9, type: 2}
   OnMerged:
     m_PersistentCalls:
       m_Calls: []
@@ -244,6 +310,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7595107563256728907, guid: e60d25de1fe1a8648a55f7e349747950, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ea8d8232183650c40a8915fa8b2a0475, type: 2}
     - target: {fileID: 919132149155446097, guid: e60d25de1fe1a8648a55f7e349747950, type: 3}
       propertyPath: m_Name
       value: Minigun

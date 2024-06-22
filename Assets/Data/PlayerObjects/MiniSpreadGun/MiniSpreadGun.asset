@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e99ad7fe460a1094b92c055cbe73d3e4, type: 3}
+  m_Name: MiniSpreadGun
+  m_EditorClassIdentifier: 
+  ObjectName: MiniSpreadGun
+  ObjectID: 3
+  ObjectPrefab: {fileID: 7004024163120754832, guid: 21bcbd6293f3e654ca946ab596bb4499, type: 3}
+  recipes:
+  - {fileID: 11400000, guid: 68e78d6b16bd49a4eb0af3987f81fc06, type: 2}

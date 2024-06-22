@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using static UnityEngine.GraphicsBuffer;
 
@@ -17,6 +19,7 @@ public class Player : MonoBehaviour {
     [SerializeField]
     private float _scrollSpeed = 30f;
     private float _scrollInput;
+
 
     private Vector3 _input;
     private float _currentSpeed;
@@ -90,6 +93,9 @@ public class Player : MonoBehaviour {
             obj.layer = LayerMask.NameToLayer("PickedObject");
             _picked_rb = rb;
             _picked_obj = ao;
+            PlayerObject po = obj.GetComponent<PlayerObject>();
+            po.OnPlayerHold();
+            po.OnMerged.AddListener(OnHeldObjectMerged);
         }
     }
 
@@ -97,6 +103,9 @@ public class Player : MonoBehaviour {
     public void OnObjectReleased() {
         if(_picked_rb) {
             _picked_rb.gameObject.layer = _originalPickedObjLayer;
+            PlayerObject po = _picked_rb.GetComponent<PlayerObject>();
+            po.OnPlayerRelease();
+            po.OnMerged.RemoveListener(OnHeldObjectMerged);
         }
         _picked_rb = null;
         _picked_obj = null;
@@ -125,5 +134,10 @@ public class Player : MonoBehaviour {
             _scrollInput = -context.ReadValue<float>();
         else if (context.canceled)
             _scrollInput = 0f;
+    }
+
+    public void OnHeldObjectMerged(GameObject newObj) {
+        OnObjectReleased();
+        OnObjectPicked(newObj);
     }
 }

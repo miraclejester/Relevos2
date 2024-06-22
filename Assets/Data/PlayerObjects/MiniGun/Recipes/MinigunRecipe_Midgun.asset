@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52d3e9efba9994943a73b3fb41d60689, type: 3}
+  m_Name: MinigunRecipe_Midgun
+  m_EditorClassIdentifier: 
+  Ingredient: {fileID: 11400000, guid: f9cc13058677b2f4d9313128f8b160b4, type: 2}
+  Result: {fileID: 11400000, guid: 17eed767ec5c5b9468e13949e42ea7c5, type: 2}

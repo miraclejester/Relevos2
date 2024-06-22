@@ -32,6 +32,7 @@ public class Repeater : MonoBehaviour
     private void Start()
     {
         _linePositions = new Vector3[2];
+        _linkedObj.GetComponent<PlayerObject>().OnMerged.AddListener(OnLinkedObjectMerge);
     }
 
     private void Update()
@@ -88,5 +89,9 @@ public class Repeater : MonoBehaviour
         _linePositions[0] = transform.position;
         _linePositions[1] = _linkedObj.transform.position;
         lineRenderer.SetPositions(_linePositions);
+    }
+
+    private void OnLinkedObjectMerge(GameObject newObj) {
+        this._linkedObj = newObj.GetComponent<PlayerActivableObject>();
     }
 }

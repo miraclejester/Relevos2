@@ -1,10 +1,11 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ProjectileSpawner : MonoBehaviour
 {
     [SerializeField] private Projectile _projectilePrefab;
-    [SerializeField] private Transform _projectileSpawnPoint;
+    [SerializeField] private List<Transform> _projectileSpawnPoints;
     [SerializeField] private float _fireRate;
     [SerializeField] private float _optimalActivationDistance;
     [SerializeField] private float _maxActivationDistance;
@@ -18,10 +19,14 @@ public class ProjectileSpawner : MonoBehaviour
         if (!canFire(distanceToActivator)) return;
 
         UpdateCurrentFireRate(distanceToActivator);
-        Projectile instance = Instantiate<Projectile>(_projectilePrefab);
-        instance.SetDirection(_projectileSpawnPoint.forward.normalized);
-        instance.transform.position = _projectileSpawnPoint.position;
+        _projectileSpawnPoints.ForEach(sp => fireIndividualProjectile(sp));
         StartCoroutine(StartFireTimer());
+    }
+
+    private void fireIndividualProjectile(Transform spawnPoint) {
+        Projectile instance = Instantiate<Projectile>(_projectilePrefab);
+        instance.SetDirection(spawnPoint.forward.normalized);
+        instance.transform.position = spawnPoint.position;
     }
 
     private bool canFire(float distanceToActivator) => _canFire && distanceToActivator <= _maxActivationDistance;
