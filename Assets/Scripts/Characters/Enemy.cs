@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour, IDamageable
@@ -13,6 +14,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     [SerializeField]
     private Image _healthBar;
+
+    public UnityAction OnDeath;
 
     private GameObject _target = null;
     private float _currentHealth = 0;
@@ -52,6 +55,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        OnDeath?.Invoke();
         Destroy(gameObject);
     }
 }

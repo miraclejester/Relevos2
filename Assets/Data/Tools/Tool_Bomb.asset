@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9e8f7af021e82540812cc4ae11948d8, type: 3}
+  m_Name: Tool_Bomb
+  m_EditorClassIdentifier: 
+  Title: Bomb
+  Description: Explosive that delas damage in an area.
+  Tier: 1
+  Icon: {fileID: 21300000, guid: 708ab7caefbe44e448b12bb454ff5eb6, type: 3}
+  PlayerObject: {fileID: 7707113059332434548, guid: bac4a273d5b06cd40b959ba35de453b9, type: 3}
