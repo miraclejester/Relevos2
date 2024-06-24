@@ -28,12 +28,13 @@ public class WavesManager : MonoBehaviour
 
     public UnityAction<int> OnNextWave;
     public UnityAction<float> OnPrepare;
+    public UnityAction<bool> OnGameFinished;
 
     private GameState _gameState = GameState.Show;
-    private int _currentWave = -1;
+    private int _currentWave = 0;
     private Wave _wave = null;
     private int _enemiesCount = 0;
-    private int _enemiesIndex = -1;
+    private int _enemiesIndex = 0;
 
     private float _timer = 0;
 
@@ -62,16 +63,12 @@ public class WavesManager : MonoBehaviour
                 {
                     ToolsManager.Instance.SetupTools();
                     _gameState = GameState.Prepare;
+                    _timer = 0;
+                    StartCoroutine(WaitForNextWave());
                 }
                 break;
             case GameState.Prepare:
                 OnPrepare?.Invoke(_timer);
-                if(_timer > _prepareDuration)
-                {
-                    _timer = 0;
-                    NextWave();
-                }
-
                 break;
             case GameState.OnWave:
                 if(_enemiesCount == 0)
@@ -79,7 +76,6 @@ public class WavesManager : MonoBehaviour
                     FinishWave();
                     break;
                 }
-
                 UpdateWave();
                 break;
             case GameState.Victory:
@@ -94,47 +90,62 @@ public class WavesManager : MonoBehaviour
 
     private void UpdateWave()
     {
-        if(_timer > _wave.SpawnInterval)
-        {
-            SpawnEnemies();
-            _timer = 0;
-        }
+       
     }
 
     private void NextWave()
     {
-        _currentWave += 1;
-
-        if(_currentWave > _waves.Count)
+        if(GameFinished())
         {
             _gameState = GameState.Victory;
             return;
         }
 
         _wave = _waves[_currentWave];
+        _enemiesIndex = 0;
         _gameState = GameState.OnWave;
         _enemiesCount = _wave.TotalEnemies;
-        OnNextWave?.Invoke(_currentWave + 1);
+        OnNextWave?.Invoke(_currentWave);
+        StartCoroutine(SpawnAllEnemiesForWave());
     }
+
+    bool GameFinished() => _currentWave >= _waves.Count;
 
     private void FinishWave()
     {
-        _enemiesIndex = 0;
+        _currentWave += 1;
+
+        if (GameFinished())
+        {
+            _gameState = GameState.Victory;
+            OnGameFinished?.Invoke(true);
+            return;
+        }    
         _gameState = GameState.Show;
     }
 
-    private void SpawnEnemies()
+    private IEnumerator<WaitForSeconds> SpawnAllEnemiesForWave()
     {
-        _enemiesIndex = Mathf.Min(_enemiesIndex + 1, _wave.NumberEnemies.Count);
-
-        if(_enemiesIndex >= _wave.NumberEnemies.Count)
-            return;
-
-        for(int i = 0; i < _wave.NumberEnemies[_enemiesIndex]; i++)
+        for(int enemyIndex = 0; enemyIndex < _wave.NumberEnemies.Count; enemyIndex++)
         {
-            Vector2 randomPos = Random.insideUnitCircle * _spawnRadius;
-            Vector3 position = _spawnCenter.position + new Vector3(randomPos.x, 0, randomPos.y);
-            Instantiate(_wave.Enemies[_enemiesIndex], position, Quaternion.identity);
+            for (int i = 0; i < _wave.NumberEnemies[enemyIndex]; i++)
+            {
+                Vector2 randomPos = Random.insideUnitCircle * _spawnRadius;
+                Vector3 position = _spawnCenter.position + new Vector3(randomPos.x, 0, randomPos.y);
+                GameObject enemy = Instantiate(_wave.Enemies[enemyIndex], position, Quaternion.identity);
+                Enemy enemyComponent = enemy.GetComponent<Enemy>();
+                Debug.Assert(enemyComponent, "No enemy component found in supposed enemy");
+                enemyComponent.OnDeath += EnemyDied;
+            }
+            yield return new WaitForSeconds(_wave.SpawnInterval);
         }
     }
+
+    private IEnumerator<WaitForSeconds> WaitForNextWave()
+    {
+        yield return new WaitForSeconds(_prepareDuration);
+        NextWave();
+    }
+
+    private void EnemyDied() => _enemiesCount--;
 }

@@ -22,6 +22,6 @@ public class WaveDisplay : MonoBehaviour
 
     private void NextWave(int wave)
     {
-        _indicator.text = DEFAULT_APPEND + wave;
+        _indicator.text = DEFAULT_APPEND + (wave + 1);
     }
 }
