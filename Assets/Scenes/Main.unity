@@ -325,7 +325,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _waves:
   - {fileID: 11400000, guid: 7a7dd054cb2c49740be10ddc6dfb37f7, type: 2}
-  _prepareDuration: 2
+  - {fileID: 11400000, guid: 7a7dd054cb2c49740be10ddc6dfb37f7, type: 2}
+  _prepareDuration: 3
   _spawnCenter: {fileID: 1255915250}
   _spawnRadius: 10
 --- !u!1 &222974533
@@ -1477,7 +1478,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -20.8, y: 21}
+  m_AnchoredPosition: {x: -20.800049, y: 21}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &1556880131
