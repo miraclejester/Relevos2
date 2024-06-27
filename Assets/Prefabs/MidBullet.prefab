@@ -152,3 +152,4 @@ MonoBehaviour:
   _damage: 1
   _speed: 40
   _timeToLive: 3
+  _targetTag: Enemy

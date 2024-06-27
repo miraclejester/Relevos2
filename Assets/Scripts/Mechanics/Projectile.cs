@@ -7,6 +7,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float _damage;
     [SerializeField] private float _speed;
     [SerializeField] private float _timeToLive;
+    [SerializeField] private string _targetTag;
 
     private Rigidbody rb;
 
@@ -35,8 +36,8 @@ public class Projectile : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Enemy") && other.TryGetComponent(out IDamageable enemy)) {
-            enemy.OnHit(_damage);
+        if (other.CompareTag(_targetTag) && other.TryGetComponent(out IDamageable target)) {
+            target.OnHit(_damage);
             Destroy(gameObject);
         }
     }

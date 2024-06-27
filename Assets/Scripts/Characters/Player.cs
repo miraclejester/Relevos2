@@ -1,10 +1,12 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using static UnityEngine.GraphicsBuffer;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour, IDamageable {
+    [Header("Health")]
+    [SerializeField] private int _maxHealth;
+    [SerializeField] private float _invincibilityDuration;
 
     [Header("Movement")]
     [SerializeField] private float _speed;
@@ -20,17 +22,38 @@ public class Player : MonoBehaviour {
     private float _scrollSpeed = 30f;
     private float _scrollInput;
 
-
     private Vector3 _input;
     private float _currentSpeed;
     private Rigidbody _rigidBody;
     private Rigidbody _picked_rb;
     private PlayerActivableObject _picked_obj;
     private int _originalPickedObjLayer;
+    
+    private int _currentHealth;
+    public int CurrentHealth
+    {
+        get
+        {
+            return _currentHealth;
+        }
+
+        set
+        {
+            _currentHealth = value;
+            EventsManager.Instance.PlayerHealthChanged(_currentHealth);
+        }
+    }
+
+    private bool _invincible = false;
 
     private void Awake() {
         _rigidBody = GetComponent<Rigidbody>();
         _rangeIndicator.transform.localScale = new Vector3(_rangeRadius, 0.2f, _rangeRadius);
+    }
+
+    private void Start() {
+        CurrentHealth = _maxHealth;
+        WavesManager.Instance.OnGameFinished += OnGameFinished;
     }
 
     private void Update() {
@@ -56,6 +79,45 @@ public class Player : MonoBehaviour {
             Vector3 axis = Mathf.Sign(_scrollInput) * Vector3.up;
             _picked_rb.MoveRotation(Quaternion.RotateTowards(_picked_rb.rotation, _picked_rb.rotation * Quaternion.AngleAxis(frameRot, axis), frameRot));
         }
+    }
+
+    private void OnDestroy() {
+        WavesManager.Instance.OnGameFinished -= OnGameFinished;
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        HandleHostileCollision(collision);
+    }
+
+    private void OnCollisionStay(Collision collision) {
+        HandleHostileCollision(collision);
+    }
+
+    private void HandleHostileCollision(Collision collision) {
+        if (collision.gameObject.tag == "Enemy") {
+            ReceiveDamage(collision.gameObject.GetComponent<Enemy>().Power);
+        }
+    }
+
+    public void ReceiveDamage(int amount) {
+        if (_invincible || _currentHealth <= 0) return;
+        CurrentHealth = Mathf.Clamp(CurrentHealth - amount, 0, _maxHealth);
+        if (CurrentHealth <= 0) {
+            Die();
+        } else {
+            _invincible = true;
+            StartCoroutine(StartInvincibilityTimer());
+        }
+    }
+
+    private IEnumerator StartInvincibilityTimer() {
+        yield return new WaitForSeconds(_invincibilityDuration);
+        _invincible = false;
+    }
+
+    private void Die() {
+        EventsManager.Instance.PlayerDied();
+        Destroy(gameObject);
     }
 
     public void OnMove(InputAction.CallbackContext context) {
@@ -139,5 +201,13 @@ public class Player : MonoBehaviour {
     public void OnHeldObjectMerged(GameObject newObj) {
         OnObjectReleased();
         OnObjectPicked(newObj);
+    }
+
+    public void OnHit(float value) {
+        ReceiveDamage((int)value);
+    }
+
+    private void OnGameFinished(bool victory) {
+        _invincible = victory;
     }
 }

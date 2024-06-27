@@ -52,6 +52,11 @@ public class WavesManager : MonoBehaviour
         } 
     }
 
+    private void Start()
+    {
+        EventsManager.Instance.OnPlayerDied += PlayerDied;
+    }
+
     private void Update()
     {
         _timer += Time.deltaTime;
@@ -86,6 +91,10 @@ public class WavesManager : MonoBehaviour
                 break;
         }
 
+    }
+
+    private void OnDestroy() {
+        EventsManager.Instance.OnPlayerDied -= PlayerDied;
     }
 
     private void UpdateWave()
@@ -145,6 +154,11 @@ public class WavesManager : MonoBehaviour
     {
         yield return new WaitForSeconds(_prepareDuration);
         NextWave();
+    }
+
+    private void PlayerDied() {
+        _gameState = GameState.Defeat;
+        OnGameFinished.Invoke(false);
     }
 
     private void EnemyDied() => _enemiesCount--;
