@@ -53,7 +53,9 @@ public class Player : MonoBehaviour, IDamageable {
 
     private void Start() {
         CurrentHealth = _maxHealth;
-        WavesManager.Instance.OnGameFinished += OnGameFinished;
+
+        if(WavesManager.Instance)
+            WavesManager.Instance.OnGameFinished += OnGameFinished;
     }
 
     private void Update() {
@@ -82,7 +84,8 @@ public class Player : MonoBehaviour, IDamageable {
     }
 
     private void OnDestroy() {
-        WavesManager.Instance.OnGameFinished -= OnGameFinished;
+        if(WavesManager.Instance)
+            WavesManager.Instance.OnGameFinished -= OnGameFinished;
     }
 
     private void OnCollisionEnter(Collision collision) {

@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Repeater : MonoBehaviour
@@ -10,7 +11,10 @@ public class Repeater : MonoBehaviour
     private float _linkDistance = 20f;
 
     [SerializeField]
-    private LayerMask _layer;
+    private LayerMask _activateLayer;
+
+    [SerializeField]
+    private LayerMask _linkLayer;
 
     [SerializeField]
     private PlayerActivableObject _linkedObj;
@@ -21,24 +25,35 @@ public class Repeater : MonoBehaviour
     [SerializeField]
     private Color _inactiveColor = Color.gray;
 
-    private bool _connected = true;
+    private bool _connected = false;
+    private bool _active = false;
 
-    private bool _active = true;
+    private float _linkTimer = 0;
+    private float _lastActivated = 0;
 
     Vector3[] _linePositions;
-
     Collider[] _colliders = new Collider[1];
+
+    private LineRenderer _lineRenderer;
+
+    private const float LINK_TIME = 1.5f;
+    private const float ACTIVATE_COOLDOWN = 2f;
 
     private void Start()
     {
+        _lineRenderer = GetComponent<LineRenderer>();
         _linePositions = new Vector3[2];
-        _linkedObj.GetComponent<PlayerObject>().OnMerged.AddListener(OnLinkedObjectMerge);
+        _lastActivated = Time.time;
+
+        if(_linkedObj)
+            _linkedObj.GetComponent<PlayerObject>().OnMerged.AddListener(OnLinkedObjectMerge);
     }
 
     private void Update()
     {
         CheckConnection();
         Activate();
+        TriggerLink();
         UpdateConnection();
     }
 
@@ -55,14 +70,25 @@ public class Repeater : MonoBehaviour
 
     private void Activate()
     {
-        int collisions = Physics.OverlapSphereNonAlloc(transform.position, _range, _colliders, _layer);
+        if(Time.time - _lastActivated < ACTIVATE_COOLDOWN)
+            return;
+
+        int collisions = Physics.OverlapSphereNonAlloc(transform.position, _range, _colliders, _activateLayer);
 
         if(collisions > 0)
+        {
+            _active = !_active;
+            _lastActivated = Time.time;
+        }
+    }
+
+    private void TriggerLink()
+    {
+        if(_active)
         {
             float distanceToLinked = Vector3.Distance(_linkedObj.transform.position, transform.position);
             _linkedObj.Activate(distanceToLinked);
         }
-        _active = collisions > 0;
     }
 
     private void OnDrawGizmos()
@@ -73,25 +99,48 @@ public class Repeater : MonoBehaviour
 
     private void UpdateConnection()
     {
-        var lineRenderer = GetComponent<LineRenderer>();
+        if(!_connected )
+            return;
 
-        if (_connected && _active)
-        {
-            lineRenderer.startColor = _activeColor;
-            lineRenderer.endColor = _activeColor;
-        }
-        else
-        {
-            lineRenderer.startColor = _inactiveColor;
-            lineRenderer.endColor = _inactiveColor;
-        }
+        _lineRenderer.startColor = _active ? _activeColor : _inactiveColor;
+        _lineRenderer.endColor = _active ? _activeColor : _inactiveColor;
 
         _linePositions[0] = transform.position;
         _linePositions[1] = _linkedObj.transform.position;
-        lineRenderer.SetPositions(_linePositions);
+        _lineRenderer.SetPositions(_linePositions);
     }
 
     private void OnLinkedObjectMerge(GameObject newObj) {
         this._linkedObj = newObj.GetComponent<PlayerActivableObject>();
+    }
+
+    private void NewLink(PlayerActivableObject obj)
+    {
+        if(_linkedObj)
+            _linkedObj.GetComponent<PlayerObject>().OnMerged.RemoveListener(OnLinkedObjectMerge);
+
+        _linkedObj = obj;
+        _linkedObj.GetComponent<PlayerObject>().OnMerged.AddListener(OnLinkedObjectMerge);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if((_linkLayer.value & 1 << other.gameObject.layer) != 0)
+            return;
+
+        _linkTimer += Time.deltaTime;
+
+        if(_linkTimer > LINK_TIME)
+        {
+            if(other.TryGetComponent(out PlayerActivableObject obj))
+            {
+                NewLink(obj);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        _linkTimer = 0;
     }
 }
