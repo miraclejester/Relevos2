@@ -11,6 +11,10 @@ public class Enemy : MonoBehaviour, IDamageable
     [Header("Data")]
     [SerializeField]
     private float _maxHealth;
+    [SerializeField]
+    private int _power = 1;
+    public int Power => _power;
+
 
     [SerializeField]
     private Image _healthBar;
@@ -30,12 +34,19 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         _currentHealth = _maxHealth;
         _target = GameObject.FindGameObjectWithTag("Player");
+
+        EventsManager.Instance.OnPlayerDied += OnPlayerDeath;
     }
 
     private void FixedUpdate() 
     {
         if( _target != null )
             Move();
+    }
+
+    private void OnDestroy()
+    {
+        EventsManager.Instance.OnPlayerDied -= OnPlayerDeath;
     }
 
     private void Move()
@@ -51,6 +62,11 @@ public class Enemy : MonoBehaviour, IDamageable
         _healthBar.fillAmount = _currentHealth / _maxHealth;
         if(_currentHealth <= 0)
             Die();
+    }
+
+    public void OnPlayerDeath()
+    {
+        _target = null;
     }
 
     private void Die()

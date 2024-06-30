@@ -76,6 +76,57 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2331387696180899693
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1590362877526988729}
+  - component: {fileID: 7994448191723702057}
+  m_Layer: 9
+  m_Name: Gun
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1590362877526988729
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2331387696180899693}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4877878784801613304}
+  m_Father: {fileID: 8742786254511350405}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7994448191723702057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2331387696180899693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e7f955886f43534295a851c173a2243, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _projectilePrefab: {fileID: 8488134240118585265, guid: 2699e38c18ee19a498619e93a41ac064, type: 3}
+  _projectileSpawnPoints:
+  - {fileID: 4877878784801613304}
+  _fireRate: 0.4
+  _optimalActivationDistance: 1
+  _maxActivationDistance: 1
 --- !u!1 &2459359069367259240
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,8 +141,9 @@ GameObject:
   - component: {fileID: 6423440211313226683}
   - component: {fileID: 8617381752537955808}
   - component: {fileID: 7896075644426079784}
+  - component: {fileID: 8650420739852185073}
   m_Layer: 9
-  m_Name: Enemy
+  m_Name: ShootingEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111,6 +163,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5909631595567518626}
+  - {fileID: 1590362877526988729}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6839018788229041919
@@ -144,7 +197,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8f891c95ce0d20f478fc684247a0453a, type: 2}
+  - {fileID: 2100000, guid: 6d1c6ced5600c294487e2efb22563abe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -197,7 +250,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2459359069367259240}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 0.0000001
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -212,7 +265,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
@@ -228,9 +281,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 295151dee92e8004b9320880cfccd251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 3
-  _maxHealth: 5
+  _speed: 1
+  _maxHealth: 8
+  _power: 1
   _healthBar: {fileID: 6211694076874925189}
+--- !u!114 &8650420739852185073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2459359069367259240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 062a0e98d7c180c49aba435e2ec91e20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _projectileSpawner: {fileID: 7994448191723702057}
+--- !u!1 &6976003433556434033
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4877878784801613304}
+  m_Layer: 9
+  m_Name: GunSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4877878784801613304
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6976003433556434033}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1590362877526988729}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7357122908232922546
 GameObject:
   m_ObjectHideFlags: 0

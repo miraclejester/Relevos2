@@ -7,6 +7,8 @@ public class PlayerObject : MonoBehaviour {
     [HideInInspector] public UnityEvent<GameObject> OnMerged;
 
     private bool _held = false;
+    public UnityAction OnPlayerHoldEvent;
+    public UnityAction OnPlayerReleaseEvent;
 
     public string GetName() {
         return _objectData.ObjectName;
@@ -38,9 +40,11 @@ public class PlayerObject : MonoBehaviour {
 
     public void OnPlayerHold() {
         _held = true;
+        OnPlayerHoldEvent?.Invoke();
     }
 
     public void OnPlayerRelease() {
         _held = false;
+        OnPlayerReleaseEvent?.Invoke();
     }
 }

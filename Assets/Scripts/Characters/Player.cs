@@ -1,10 +1,12 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using static UnityEngine.GraphicsBuffer;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour, IDamageable {
+    [Header("Health")]
+    [SerializeField] private int _maxHealth;
+    [SerializeField] private float _invincibilityDuration;
 
     [Header("Movement")]
     [SerializeField] private float _speed;
@@ -20,17 +22,40 @@ public class Player : MonoBehaviour {
     private float _scrollSpeed = 30f;
     private float _scrollInput;
 
-
     private Vector3 _input;
     private float _currentSpeed;
     private Rigidbody _rigidBody;
     private Rigidbody _picked_rb;
     private PlayerActivableObject _picked_obj;
     private int _originalPickedObjLayer;
+    
+    private int _currentHealth;
+    public int CurrentHealth
+    {
+        get
+        {
+            return _currentHealth;
+        }
+
+        set
+        {
+            _currentHealth = value;
+            EventsManager.Instance?.PlayerHealthChanged(_currentHealth);
+        }
+    }
+
+    private bool _invincible = false;
 
     private void Awake() {
         _rigidBody = GetComponent<Rigidbody>();
         _rangeIndicator.transform.localScale = new Vector3(_rangeRadius, 0.2f, _rangeRadius);
+    }
+
+    private void Start() {
+        CurrentHealth = _maxHealth;
+
+        if(WavesManager.Instance)
+            WavesManager.Instance.OnGameFinished += OnGameFinished;
     }
 
     private void Update() {
@@ -50,12 +75,57 @@ public class Player : MonoBehaviour {
         Vector3 newPosition = _rigidBody.position + _currentSpeed * Time.fixedDeltaTime * movementDirection;
         _rigidBody.MovePosition(newPosition);
 
-        if (_picked_rb is not null)
+        if (_picked_rb is null)
+            return;
+
+        if (_picked_rb.gameObject is null)
         {
-            float frameRot = _scrollInput * _scrollSpeed * Time.fixedDeltaTime;
-            Vector3 axis = Mathf.Sign(_scrollInput) * Vector3.up;
-            _picked_rb.MoveRotation(Quaternion.RotateTowards(_picked_rb.rotation, _picked_rb.rotation * Quaternion.AngleAxis(frameRot, axis), frameRot));
+            _picked_rb = null;
+            return;
         }
+        float frameRot = _scrollInput * _scrollSpeed * Time.fixedDeltaTime;
+        Vector3 axis = Mathf.Sign(_scrollInput) * Vector3.up;
+        _picked_rb.MoveRotation(Quaternion.RotateTowards(_picked_rb.rotation, _picked_rb.rotation * Quaternion.AngleAxis(frameRot, axis), frameRot));
+    }
+
+    private void OnDestroy() {
+        if(WavesManager.Instance)
+            WavesManager.Instance.OnGameFinished -= OnGameFinished;
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        HandleHostileCollision(collision);
+    }
+
+    private void OnCollisionStay(Collision collision) {
+        HandleHostileCollision(collision);
+    }
+
+    private void HandleHostileCollision(Collision collision) {
+        if (collision.gameObject.tag == "Enemy") {
+            ReceiveDamage(collision.gameObject.GetComponent<Enemy>().Power);
+        }
+    }
+
+    public void ReceiveDamage(int amount) {
+        if (_invincible || _currentHealth <= 0) return;
+        CurrentHealth = Mathf.Clamp(CurrentHealth - amount, 0, _maxHealth);
+        if (CurrentHealth <= 0) {
+            Die();
+        } else {
+            _invincible = true;
+            StartCoroutine(StartInvincibilityTimer());
+        }
+    }
+
+    private IEnumerator StartInvincibilityTimer() {
+        yield return new WaitForSeconds(_invincibilityDuration);
+        _invincible = false;
+    }
+
+    private void Die() {
+        EventsManager.Instance.PlayerDied();
+        Destroy(gameObject);
     }
 
     public void OnMove(InputAction.CallbackContext context) {
@@ -65,23 +135,25 @@ public class Player : MonoBehaviour {
 
     public void OnPoint(InputAction.CallbackContext context) {
         Vector2 mousePos = context.ReadValue<Vector2>();
-        if (_picked_rb) {
-            Plane virtualPlane = new Plane(_referencePlaneTransform.up, _referencePlaneTransform.position);
-            Ray ray = Camera.main.ScreenPointToRay(mousePos);
 
-            if (virtualPlane.Raycast(ray, out float enter)) {
-                Vector3 hitPoint = ray.GetPoint(enter);
-                Vector3 targetPosition = hitPoint + Vector3.up * _pickedObjectYOffset;
-                Vector3 toTarget = targetPosition - _picked_obj.transform.position;
+        if (_picked_rb == null)
+            return;
 
-                var draggableComponent = _picked_obj.GetComponent<Draggable>();
-                float pickedWeight = Mathf.Min(draggableComponent.Weight, maxDraggableWeight);
-                
-                toTarget = (1 - pickedWeight/maxDraggableWeight) * toTarget;
+        Plane virtualPlane = new Plane(_referencePlaneTransform.up, _referencePlaneTransform.position);
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
 
+        if (virtualPlane.Raycast(ray, out float enter))
+        {
+            Vector3 hitPoint = ray.GetPoint(enter);
+            Vector3 targetPosition = hitPoint + Vector3.up * _pickedObjectYOffset;
+            Vector3 toTarget = targetPosition - _picked_obj.transform.position;
 
-                _picked_rb.MovePosition(_picked_obj.transform.position + toTarget);
-            }
+            var draggableComponent = _picked_obj.GetComponent<Draggable>();
+            float pickedWeight = Mathf.Min(draggableComponent.Weight, maxDraggableWeight);
+
+            toTarget = (1 - pickedWeight / maxDraggableWeight) * toTarget;
+
+            _picked_rb.MovePosition(_picked_obj.transform.position + toTarget);
         }
     }
 
@@ -139,5 +211,13 @@ public class Player : MonoBehaviour {
     public void OnHeldObjectMerged(GameObject newObj) {
         OnObjectReleased();
         OnObjectPicked(newObj);
+    }
+
+    public void OnHit(float value) {
+        ReceiveDamage((int)value);
+    }
+
+    private void OnGameFinished(bool victory) {
+        _invincible = victory;
     }
 }
