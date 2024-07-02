@@ -28,7 +28,12 @@ public class Player : MonoBehaviour, IDamageable {
     private Rigidbody _picked_rb;
     private PlayerActivableObject _picked_obj;
     private int _originalPickedObjLayer;
-    
+
+    [SerializeField]
+    private Animator _animator;
+    [SerializeField]
+    private GameObject _playerModel;
+
     private int _currentHealth;
     public int CurrentHealth
     {
@@ -74,6 +79,15 @@ public class Player : MonoBehaviour, IDamageable {
         Vector3 movementDirection = _input.normalized;
         Vector3 newPosition = _rigidBody.position + _currentSpeed * Time.fixedDeltaTime * movementDirection;
         _rigidBody.MovePosition(newPosition);
+
+        if (!_animator.GetBool("Walking") && _input.sqrMagnitude != 0)
+            _animator.SetBool("Walking", true);
+        else if (_animator.GetBool("Walking") && _input.sqrMagnitude == 0)
+            _animator.SetBool("Walking", false);
+
+        if (movementDirection.sqrMagnitude != 0)
+            _playerModel.transform.rotation = Quaternion.LookRotation(new(movementDirection.x, 0f, movementDirection.z), Vector3.up);
+
 
         if (_picked_rb is null)
             return;

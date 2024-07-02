@@ -20,6 +20,10 @@ public class Wall : MonoBehaviour, IDamageable
     private BoxCollider _boxCollider;
     private PlayerObject _playerObject;
 
+    [SerializeField]
+    private float _closingDelay = 2f;
+    private bool _isDelayingClose = false;
+    private Coroutine _closeCo = null;
     private Queue<bool> _wallStateChangeQueue;
     
 
@@ -53,7 +57,14 @@ public class Wall : MonoBehaviour, IDamageable
     void UpdateWallState(bool expand)
     {
         _protectionActive = expand;
+        if (!expand && !_isDelayingClose)
+        {
+            _closeCo = StartCoroutine(ChangeWallState(expand));
+            return;
+        }
+
         StartCoroutine(ChangeWallState(expand));
+
     }
 
     public void OnActivate()
@@ -85,6 +96,20 @@ public class Wall : MonoBehaviour, IDamageable
     {
         const float step = 1.0f / 60.0f;
         float elapsedTime = 0.0f;
+
+        if (!expanded)
+        {
+            _isDelayingClose = true;
+            yield return new WaitForSeconds(_closingDelay);
+            _isDelayingClose = false;
+        }
+        else if (_isDelayingClose)
+        {
+            StopCoroutine(_closeCo);
+            _isDelayingClose = false;
+            _closeCo = null;
+            yield break;
+        }
 
         _expanding = true;
         while (elapsedTime < _timeToExpand + step)
